@@ -140,7 +140,7 @@ public class LZHSFlodText extends AppCompatTextView implements View.OnClickListe
     public void setText(final CharSequence text, final BufferType type) {
         if (TextUtils.isEmpty(text) || mShowMaxLine == 0)
             super.setText(text, type);
-         else if (isExpand) {  //文字展开
+        else if (isExpand) {  //文字展开
             SpannableStringBuilder spannable = new SpannableStringBuilder(mOriginalText);
             addTip(spannable, type);
         } else {
@@ -154,7 +154,7 @@ public class LZHSFlodText extends AppCompatTextView implements View.OnClickListe
                         return true;
                     }
                 });
-            } else  formatText(text, type);
+            } else formatText(text, type);
         }
     }
 
@@ -166,8 +166,8 @@ public class LZHSFlodText extends AppCompatTextView implements View.OnClickListe
      */
     private void addTip(SpannableStringBuilder span, BufferType type) {
         if (!(isExpand && !isShowTipAfterExpand)) { //折叠或者展开并且展开后显示提示
-            if (mTipGravity == END)   span.append("  ");
-            else  span.append("\n");
+            if (mTipGravity == END) span.append("  ");
+            else span.append("\n");
             int length;
             if (isExpand) {
                 span.append(mExpandText);
@@ -183,7 +183,7 @@ public class LZHSFlodText extends AppCompatTextView implements View.OnClickListe
                     setClickable(false);
                     setFocusable(false);
                     setLongClickable(false);
-                } else   setMovementMethod(LinkMovementMethod.getInstance());
+                } else setMovementMethod(LinkMovementMethod.getInstance());
             }
             span.setSpan(new ForegroundColorSpan(mTipColor), span.length() - length, span.length(), Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
         }
@@ -311,232 +311,233 @@ public class LZHSFlodText extends AppCompatTextView implements View.OnClickListe
         Paint paint = getPaint();
         return paint.measureText(text);
     }
-}
-class LinkMovementMethod extends ScrollingMovementMethod {
-    private static final int CLICK = 1;
-    private static final int UP = 2;
-    private static final int DOWN = 3;
 
-    @Override
-    public boolean canSelectArbitrarily() {
-        return true;
-    }
+    static class LinkMovementMethod extends ScrollingMovementMethod {
+        private static final int CLICK = 1;
+        private static final int UP = 2;
+        private static final int DOWN = 3;
 
-    @Override
-    protected boolean handleMovementKey(TextView widget, Spannable buffer, int keyCode,
-                                        int movementMetaState, KeyEvent event) {
-        switch (keyCode) {
-            case KeyEvent.KEYCODE_DPAD_CENTER:
-            case KeyEvent.KEYCODE_ENTER:
-                if (KeyEvent.metaStateHasNoModifiers(movementMetaState)) {
-                    if (event.getAction() == KeyEvent.ACTION_DOWN &&
-                            event.getRepeatCount() == 0 && action(CLICK, widget, buffer)) {
+        @Override
+        public boolean canSelectArbitrarily() {
+            return true;
+        }
+
+        @Override
+        protected boolean handleMovementKey(TextView widget, Spannable buffer, int keyCode,
+                                            int movementMetaState, KeyEvent event) {
+            switch (keyCode) {
+                case KeyEvent.KEYCODE_DPAD_CENTER:
+                case KeyEvent.KEYCODE_ENTER:
+                    if (KeyEvent.metaStateHasNoModifiers(movementMetaState)) {
+                        if (event.getAction() == KeyEvent.ACTION_DOWN &&
+                                event.getRepeatCount() == 0 && action(CLICK, widget, buffer)) {
+                            return true;
+                        }
+                    }
+                    break;
+
+            }
+            return super.handleMovementKey(widget, buffer, keyCode, movementMetaState, event);
+        }
+
+        @Override
+        protected boolean up(TextView widget, Spannable buffer) {
+            if (action(UP, widget, buffer)) {
+                return true;
+            }
+
+            return super.up(widget, buffer);
+        }
+
+        @Override
+        protected boolean down(TextView widget, Spannable buffer) {
+            if (action(DOWN, widget, buffer)) {
+                return true;
+            }
+
+            return super.down(widget, buffer);
+        }
+
+        @Override
+        protected boolean left(TextView widget, Spannable buffer) {
+            if (action(UP, widget, buffer)) {
+                return true;
+            }
+
+            return super.left(widget, buffer);
+        }
+
+        @Override
+        protected boolean right(TextView widget, Spannable buffer) {
+            if (action(DOWN, widget, buffer)) {
+                return true;
+            }
+
+            return super.right(widget, buffer);
+        }
+
+        private boolean action(int what, TextView widget, Spannable buffer) {
+            Layout layout = widget.getLayout();
+
+            int padding = widget.getTotalPaddingTop() +
+                    widget.getTotalPaddingBottom();
+            int areaTop = widget.getScrollY();
+            int areaBot = areaTop + widget.getHeight() - padding;
+
+            int lineTop = layout.getLineForVertical(areaTop);
+            int lineBot = layout.getLineForVertical(areaBot);
+
+            int first = layout.getLineStart(lineTop);
+            int last = layout.getLineEnd(lineBot);
+
+            ClickableSpan[] candidates = buffer.getSpans(first, last, ClickableSpan.class);
+
+            int a = Selection.getSelectionStart(buffer);
+            int b = Selection.getSelectionEnd(buffer);
+
+            int selStart = Math.min(a, b);
+            int selEnd = Math.max(a, b);
+
+            if (selStart < 0) {
+                if (buffer.getSpanStart(FROM_BELOW) >= 0) {
+                    selStart = selEnd = buffer.length();
+                }
+            }
+
+            if (selStart > last)
+                selStart = selEnd = Integer.MAX_VALUE;
+            if (selEnd < first)
+                selStart = selEnd = -1;
+
+            switch (what) {
+                case CLICK:
+                    if (selStart == selEnd) {
+                        return false;
+                    }
+
+                    ClickableSpan[] link = buffer.getSpans(selStart, selEnd, ClickableSpan.class);
+
+                    if (link.length != 1)
+                        return false;
+
+                    link[0].onClick(widget);
+                    break;
+
+                case UP:
+                    int bestStart, bestEnd;
+
+                    bestStart = -1;
+                    bestEnd = -1;
+
+                    for (int i = 0; i < candidates.length; i++) {
+                        int end = buffer.getSpanEnd(candidates[i]);
+
+                        if (end < selEnd || selStart == selEnd) {
+                            if (end > bestEnd) {
+                                bestStart = buffer.getSpanStart(candidates[i]);
+                                bestEnd = end;
+                            }
+                        }
+                    }
+
+                    if (bestStart >= 0) {
+                        Selection.setSelection(buffer, bestEnd, bestStart);
                         return true;
                     }
-                }
-                break;
 
-        }
-        return super.handleMovementKey(widget, buffer, keyCode, movementMetaState, event);
-    }
+                    break;
 
-    @Override
-    protected boolean up(TextView widget, Spannable buffer) {
-        if (action(UP, widget, buffer)) {
-            return true;
-        }
+                case DOWN:
+                    bestStart = Integer.MAX_VALUE;
+                    bestEnd = Integer.MAX_VALUE;
 
-        return super.up(widget, buffer);
-    }
+                    for (int i = 0; i < candidates.length; i++) {
+                        int start = buffer.getSpanStart(candidates[i]);
 
-    @Override
-    protected boolean down(TextView widget, Spannable buffer) {
-        if (action(DOWN, widget, buffer)) {
-            return true;
-        }
-
-        return super.down(widget, buffer);
-    }
-
-    @Override
-    protected boolean left(TextView widget, Spannable buffer) {
-        if (action(UP, widget, buffer)) {
-            return true;
-        }
-
-        return super.left(widget, buffer);
-    }
-
-    @Override
-    protected boolean right(TextView widget, Spannable buffer) {
-        if (action(DOWN, widget, buffer)) {
-            return true;
-        }
-
-        return super.right(widget, buffer);
-    }
-
-    private boolean action(int what, TextView widget, Spannable buffer) {
-        Layout layout = widget.getLayout();
-
-        int padding = widget.getTotalPaddingTop() +
-                widget.getTotalPaddingBottom();
-        int areaTop = widget.getScrollY();
-        int areaBot = areaTop + widget.getHeight() - padding;
-
-        int lineTop = layout.getLineForVertical(areaTop);
-        int lineBot = layout.getLineForVertical(areaBot);
-
-        int first = layout.getLineStart(lineTop);
-        int last = layout.getLineEnd(lineBot);
-
-        ClickableSpan[] candidates = buffer.getSpans(first, last, ClickableSpan.class);
-
-        int a = Selection.getSelectionStart(buffer);
-        int b = Selection.getSelectionEnd(buffer);
-
-        int selStart = Math.min(a, b);
-        int selEnd = Math.max(a, b);
-
-        if (selStart < 0) {
-            if (buffer.getSpanStart(FROM_BELOW) >= 0) {
-                selStart = selEnd = buffer.length();
-            }
-        }
-
-        if (selStart > last)
-            selStart = selEnd = Integer.MAX_VALUE;
-        if (selEnd < first)
-            selStart = selEnd = -1;
-
-        switch (what) {
-            case CLICK:
-                if (selStart == selEnd) {
-                    return false;
-                }
-
-                ClickableSpan[] link = buffer.getSpans(selStart, selEnd, ClickableSpan.class);
-
-                if (link.length != 1)
-                    return false;
-
-                link[0].onClick(widget);
-                break;
-
-            case UP:
-                int bestStart, bestEnd;
-
-                bestStart = -1;
-                bestEnd = -1;
-
-                for (int i = 0; i < candidates.length; i++) {
-                    int end = buffer.getSpanEnd(candidates[i]);
-
-                    if (end < selEnd || selStart == selEnd) {
-                        if (end > bestEnd) {
-                            bestStart = buffer.getSpanStart(candidates[i]);
-                            bestEnd = end;
+                        if (start > selStart || selStart == selEnd) {
+                            if (start < bestStart) {
+                                bestStart = start;
+                                bestEnd = buffer.getSpanEnd(candidates[i]);
+                            }
                         }
                     }
-                }
 
-                if (bestStart >= 0) {
-                    Selection.setSelection(buffer, bestEnd, bestStart);
-                    return true;
-                }
-
-                break;
-
-            case DOWN:
-                bestStart = Integer.MAX_VALUE;
-                bestEnd = Integer.MAX_VALUE;
-
-                for (int i = 0; i < candidates.length; i++) {
-                    int start = buffer.getSpanStart(candidates[i]);
-
-                    if (start > selStart || selStart == selEnd) {
-                        if (start < bestStart) {
-                            bestStart = start;
-                            bestEnd = buffer.getSpanEnd(candidates[i]);
-                        }
+                    if (bestEnd < Integer.MAX_VALUE) {
+                        Selection.setSelection(buffer, bestStart, bestEnd);
+                        return true;
                     }
-                }
 
-                if (bestEnd < Integer.MAX_VALUE) {
-                    Selection.setSelection(buffer, bestStart, bestEnd);
-                    return true;
-                }
-
-                break;
-        }
-
-        return false;
-    }
-
-    @Override
-    public boolean onTouchEvent(TextView widget, Spannable buffer,
-                                MotionEvent event) {
-        int action = event.getAction();
-
-        if (action == MotionEvent.ACTION_UP || action == MotionEvent.ACTION_DOWN) {
-            int x = (int) event.getX();
-            int y = (int) event.getY();
-
-            x -= widget.getTotalPaddingLeft();
-            y -= widget.getTotalPaddingTop();
-
-            x += widget.getScrollX();
-            y += widget.getScrollY();
-
-            Layout layout = widget.getLayout();
-            int line = layout.getLineForVertical(y);
-            int off = layout.getOffsetForHorizontal(line, x);
-
-            ClickableSpan[] links = buffer.getSpans(off, off, ClickableSpan.class);
-
-            if (links.length != 0) {
-                if (action == MotionEvent.ACTION_UP) {
-                    links[0].onClick(widget);
-                } else if (action == MotionEvent.ACTION_DOWN) {
-                    Selection.setSelection(buffer,
-                            buffer.getSpanStart(links[0]),
-                            buffer.getSpanEnd(links[0]));
-                }
-                return true;
-            } else {
-                Selection.removeSelection(buffer);
-                return false;
+                    break;
             }
+
+            return false;
         }
 
-        return super.onTouchEvent(widget, buffer, event);
-    }
+        @Override
+        public boolean onTouchEvent(TextView widget, Spannable buffer,
+                                    MotionEvent event) {
+            int action = event.getAction();
 
-    @Override
-    public void initialize(TextView widget, Spannable text) {
-        Selection.removeSelection(text);
-        text.removeSpan(FROM_BELOW);
-    }
+            if (action == MotionEvent.ACTION_UP || action == MotionEvent.ACTION_DOWN) {
+                int x = (int) event.getX();
+                int y = (int) event.getY();
 
-    @Override
-    public void onTakeFocus(TextView view, Spannable text, int dir) {
-        Selection.removeSelection(text);
+                x -= widget.getTotalPaddingLeft();
+                y -= widget.getTotalPaddingTop();
 
-        if ((dir & View.FOCUS_BACKWARD) != 0) {
-            text.setSpan(FROM_BELOW, 0, 0, Spannable.SPAN_POINT_POINT);
-        } else {
+                x += widget.getScrollX();
+                y += widget.getScrollY();
+
+                Layout layout = widget.getLayout();
+                int line = layout.getLineForVertical(y);
+                int off = layout.getOffsetForHorizontal(line, x);
+
+                ClickableSpan[] links = buffer.getSpans(off, off, ClickableSpan.class);
+
+                if (links.length != 0) {
+                    if (action == MotionEvent.ACTION_UP) {
+                        links[0].onClick(widget);
+                    } else if (action == MotionEvent.ACTION_DOWN) {
+                        Selection.setSelection(buffer,
+                                buffer.getSpanStart(links[0]),
+                                buffer.getSpanEnd(links[0]));
+                    }
+                    return true;
+                } else {
+                    Selection.removeSelection(buffer);
+                    return false;
+                }
+            }
+
+            return super.onTouchEvent(widget, buffer, event);
+        }
+
+        @Override
+        public void initialize(TextView widget, Spannable text) {
+            Selection.removeSelection(text);
             text.removeSpan(FROM_BELOW);
         }
+
+        @Override
+        public void onTakeFocus(TextView view, Spannable text, int dir) {
+            Selection.removeSelection(text);
+
+            if ((dir & View.FOCUS_BACKWARD) != 0) {
+                text.setSpan(FROM_BELOW, 0, 0, Spannable.SPAN_POINT_POINT);
+            } else {
+                text.removeSpan(FROM_BELOW);
+            }
+        }
+
+        public static MovementMethod getInstance() {
+            if (sInstance == null)
+                sInstance = new LinkMovementMethod();
+
+            return sInstance;
+        }
+
+        private static LinkMovementMethod sInstance;
+        private static Object FROM_BELOW = new NoCopySpan.Concrete();
     }
-
-    public static MovementMethod getInstance() {
-        if (sInstance == null)
-            sInstance = new LinkMovementMethod();
-
-        return sInstance;
-    }
-
-    private static LinkMovementMethod sInstance;
-    private static Object FROM_BELOW = new NoCopySpan.Concrete();
 }
 
