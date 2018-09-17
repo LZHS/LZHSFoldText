@@ -34,14 +34,25 @@ public class MainActivity extends AppCompatActivity {
     private void initViews() {
         mLZHSFlodText = findViewById(R.id.mLZHSFlodText);
         mLZHSFlodText.setText(val);
-        mLZHSFlodText.setOnClickListener(v -> Toast.makeText(this, "LZHSFlodText 被点击", Toast.LENGTH_SHORT).show());
-        findViewById(R.id.mFrameLayout).setOnClickListener(v -> Toast.makeText(this, "FrameLayout 被点击", Toast.LENGTH_SHORT).show());
+        mLZHSFlodText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(MainActivity.this, "LZHSFlodText 被点击", Toast.LENGTH_SHORT).show();
+            }
+        });
+        findViewById(R.id.mFrameLayout).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(MainActivity.this, "FrameLayout 被点击", Toast.LENGTH_SHORT).show();
+            }
+        });
 
         mRecyclerView = findViewById(R.id.mRecyclerView);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         for (int i = 0; i < 10; i++) mDatas.add(i);
         mRecyclerView.setAdapter(new DataAdapter());
     }
+
 
     class DataAdapter extends RecyclerView.Adapter<DataAdapter.DataViewHolder> {
         @NonNull
@@ -51,15 +62,30 @@ public class MainActivity extends AppCompatActivity {
         }
 
         @Override
-        public void onBindViewHolder(@NonNull DataViewHolder mHolder, int i) {
+        public void onBindViewHolder(@NonNull DataViewHolder mHolder, final int i) {
 
             mHolder.mLZHSFlodText.setText(val);
             mHolder.mTextAnchor.setText((mDatas.get(i).intValue() + 1) + "、 可折叠TextView");
-            mHolder.mConvertView.setOnClickListener(view ->
-                    Toast.makeText(MainActivity.this, "Item " + (mDatas.get(i).intValue() + 1) + " 被点击", Toast.LENGTH_SHORT).show()
+            mHolder.mConvertView.setOnClickListener(new View.OnClickListener() {
+                                                        @Override
+                                                        public void onClick(View v) {
+                                                            Toast.makeText(MainActivity.this, "Item " + (mDatas.get(i).intValue() + 1) + " 被点击", Toast.LENGTH_SHORT).show();
+                                                        }
+                                                    }
+
             );
-            mHolder.mFrameLayout.setOnClickListener(view -> Toast.makeText(MainActivity.this, (mDatas.get(i).intValue() + 1) + "FrameLayout 被点击", Toast.LENGTH_SHORT).show());
-            mHolder.mLZHSFlodText.setOnClickListener(view -> Toast.makeText(MainActivity.this, (mDatas.get(i).intValue() + 1) + "LZHSFlodText 被点击", Toast.LENGTH_SHORT).show());
+            mHolder.mFrameLayout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Toast.makeText(MainActivity.this, (mDatas.get(i).intValue() + 1) + "FrameLayout 被点击", Toast.LENGTH_SHORT).show();
+                }
+            });
+            mHolder.mLZHSFlodText.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Toast.makeText(MainActivity.this, (mDatas.get(i).intValue() + 1) + "LZHSFlodText 被点击", Toast.LENGTH_SHORT).show();
+                }
+            });
 
         }
 
