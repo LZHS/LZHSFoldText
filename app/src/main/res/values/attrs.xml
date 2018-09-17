@@ -21,7 +21,6 @@
         <attr name="foldText" format="string|reference" />
         <!--展开时的提示文字-->
         <attr name="expandText" format="reference|string" />
-
     </declare-styleable>
 
 </resources>

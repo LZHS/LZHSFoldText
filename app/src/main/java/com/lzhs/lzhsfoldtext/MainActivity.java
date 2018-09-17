@@ -6,9 +6,9 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.widget.Toast;
 
-import com.lzhs.lzhs_library.wedgit.comm_adapter.absrecyclerview.CommonAdapter;
-import com.lzhs.lzhs_library.wedgit.comm_adapter.absrecyclerview.base.ViewHolder;
 import com.lzhs.lzhsfoldtext.views.LZHSFlodText;
+import com.zhy.adapter.recyclerview.CommonAdapter;
+import com.zhy.adapter.recyclerview.base.ViewHolder;
 
 import java.util.ArrayList;
 import java.util.List;
