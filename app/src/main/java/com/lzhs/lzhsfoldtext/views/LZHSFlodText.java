@@ -35,7 +35,7 @@ import com.lzhs.lzhsfoldtext.R;
  * Time: 2018/9/14$ 下午2:31$ <br/>
  */
 public class LZHSFlodText extends AppCompatTextView implements View.OnClickListener {
-    private static final String TAG = "LZHSFlodText";
+    private static final String TAG = LZHSFlodText.class.getSimpleName();
     private static final String ELLIPSIZE_END = "...";
     private static final int MAX_LINE = 4;
     private static final String EXPAND_TIP_TEXT = "收起全文";
