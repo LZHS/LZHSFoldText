@@ -32,7 +32,7 @@ dependencies {
 
 ### 效果图
 
-![](https://github.com/LZHS/LZHSLibary/images/image01.jpg)
+![](https://github.com/LZHS/LZHSFoldText/blob/master/images/image01.jpg)
 
 
 ### 使用用例
