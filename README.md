@@ -38,7 +38,7 @@ dependencies {
 ### 使用用例
 
 ```
- <com.lzhs.lzhsfoldtext.views.LZHSFlodText
+ <com.lzhs.library.LZHSFlodText
             android:id="@+id/mLZHSFlodText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

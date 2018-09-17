@@ -12,7 +12,7 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.lzhs.lzhsfoldtext.views.LZHSFlodText;
+import com.lzhs.library.LZHSFlodText;
 
 import java.util.ArrayList;
 import java.util.List;

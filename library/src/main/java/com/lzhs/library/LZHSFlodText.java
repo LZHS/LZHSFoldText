@@ -1,4 +1,4 @@
-package com.lzhs.lzhsfoldtext.views;
+package com.lzhs.library;
 
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -25,8 +25,6 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.widget.TextView;
-
-import com.lzhs.lzhsfoldtext.R;
 
 /**
  * Description: 实现折叠功能的TextView  <br/>
@@ -302,7 +300,7 @@ public class LZHSFlodText extends AppCompatTextView implements View.OnClickListe
      * @param l
      */
     @Override
-    public void setOnClickListener(@Nullable View.OnClickListener l) {
+    public void setOnClickListener(@Nullable OnClickListener l) {
         listener = l;
         super.setOnClickListener(this);
     }
