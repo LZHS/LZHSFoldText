@@ -1,6 +1,6 @@
 # LZHSFlodText 可折叠TextView 
 
-[![](https://img.shields.io/badge/LZHSFlodText-v1.0.0-brightgreen.svg)](https://jitpack.io/#LZHS/LZHSFlodText)
+[![](https://img.shields.io/badge/LZHSFlodText-v1.0-brightgreen.svg)](https://jitpack.io/#LZHS/LZHSFlodText)
 
 
 
@@ -20,7 +20,7 @@ Step 2. Add the dependency
 
 ```
 dependencies {
-	    implementation 'com.github.LZHS:LZHSFoldText:v1.0.0'
+	    implementation 'com.github.LZHS:LZHSFoldText:v1.0'
 }
 ```  
 
