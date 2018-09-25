@@ -31,12 +31,7 @@ dependencies {
 
 
 ### 效果图
-
-![](https://github.com/LZHS/LZHSFoldText/blob/master/images/image01.jpg)  
-
-
-
-<img src="https://github.com/LZHS/LZHSFoldText/blob/master/images/image01.jpg" width = 30% height = 30% />
+<img src="https://github.com/LZHS/LZHSFoldText/blob/master/images/image01.jpg" width = 40% height = 40% />
 
 
 ### 使用用例
