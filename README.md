@@ -62,6 +62,11 @@ dependencies {
 
 
 
+### 应用效果试用
+[Apk 下载链接](https://github.com/LZHS/LZHSFoldText/raw/master/apk/LZHSFoldText.apk)  
+
+<img src="https://github.com/LZHS/LZHSFoldText/blob/master/images/qrcode.png" width = 40% height = 40% />
+
 
 ### 参考
 
